@@ -6,11 +6,11 @@ package c4n3;
  */
 public class Grid {
     protected final int WIDTH = 10, HEIGHT = 10;
-    protected final int cells[][];
+    protected final int cell[][];
 
     public Grid()
     {
-        cells = new int[WIDTH][HEIGHT];
+        cell = new int[WIDTH][HEIGHT];
     }
 
     public int getHeight()
@@ -25,21 +25,98 @@ public class Grid {
 
     public boolean set(int x, int y, int playerID)
     {
-        throw new UnsupportedOperationException();
+        if (!isEmpty(x, y)) return false;
+        cell[x][y] = playerID;
+        return true;
     }
 
     public int get(int x, int y)
     {
-        throw new UnsupportedOperationException();
+        if (!isWithinBounds(x, y)) return 0;
+        return cell[x][y];
     }
 
-    public boolean isPartOfSequenceOfLength(int x, int y, int playerID, int length)
+    public boolean isPartOfSequenceOfAtLeastLength(int x, int y, int length)
     {
-        throw new UnsupportedOperationException();
+        return  this.isPartofHorizontalSequenceOfAtLeastLength(x, y, length) ||
+                this.isPartofVerticalSequenceOfAtLeastLength(x, y, length) ||
+                this.isPartofDownLeftDiagonalSequenceOfAtLeastLength(x, y, length) ||
+                this.isPartofUpRightDiagonalSequenceOfAtLeastLength(x, y, length);
     }
 
-    public boolean isEmpty()
+    public boolean isEmpty(int x, int y)
     {
-        throw new UnsupportedOperationException();
+        if (!isWithinBounds(x, y)) return false;
+        return cell[x][y] == 0;
+    }
+
+    protected boolean isWithinBounds(int x, int y)
+    {
+        return x >= 0 && x < WIDTH && y >=0 && y < HEIGHT;
+    }
+
+    private boolean isPartofHorizontalSequenceOfAtLeastLength(int x, int y, int length)
+    {
+        int count = 0;
+        final int playerID = get(x, y);
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x - delta, y) == playerID) count++;
+            else break;
+        }
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x + delta, y) == playerID) count++;
+            else break;
+        }
+        return count >= length;
+    }
+    private boolean isPartofVerticalSequenceOfAtLeastLength(int x, int y, int length)
+    {
+        int count = 0;
+        final int playerID = get(x, y);
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x, y - delta) == playerID) count++;
+            else break;
+        }
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x, y + delta) == playerID) count++;
+            else break;
+        }
+        return count >= length;
+    }
+    private boolean isPartofDownLeftDiagonalSequenceOfAtLeastLength(int x, int y, int length)
+    {
+        int count = 0;
+        final int playerID = get(x, y);
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x + delta, y - delta) == playerID) count++;
+            else break;
+        }
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x - delta, y + delta) == playerID) count++;
+            else break;
+        }
+        return count >= length;
+    }
+    private boolean isPartofUpRightDiagonalSequenceOfAtLeastLength(int x, int y, int length)
+    {
+        int count = 0;
+        final int playerID = get(x, y);
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x + delta, y + delta) == playerID) count++;
+            else break;
+        }
+        for (int delta = 1; delta < length; delta++)
+        {
+            if (get(x - delta, y - delta) == playerID) count++;
+            else break;
+        }
+        return count >= length;
     }
 }
