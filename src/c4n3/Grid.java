@@ -24,7 +24,7 @@ public class Grid {
     protected final int cell[][];
 
     /**
-     * Creates field of play with default dimensions 10x10
+     * Creates playfield with default dimensions 10x10
      */
     public Grid()
     {
