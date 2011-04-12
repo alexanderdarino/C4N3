@@ -11,12 +11,12 @@ public class Grid {
     /**
      * Width of game field 
      */
-    protected final int WIDTH = 10;
+    protected static final int WIDTH = 10;
 
     /**
      * Height of game field
      */
-    protected final int HEIGHT = 10;
+    protected static final int HEIGHT = 10;
     
     /**
      *
@@ -35,7 +35,7 @@ public class Grid {
      * Returns playfield height
      * @return playfield height
      */
-    public int getHeight()
+    public static int getHeight()
     {
         return HEIGHT;
     }
@@ -44,7 +44,7 @@ public class Grid {
      * Returns playfield height
      * @return playfield width
      */
-    public int getWidth()
+    public static int getWidth()
     {
         return WIDTH;
     }
@@ -71,7 +71,7 @@ public class Grid {
      */
     public int get(int x, int y)
     {
-        if (!isWithinBounds(x, y)) return 0;
+        if (!isWithinBounds(x, y)) return -1;
         return cell[x][y];
     }
 
@@ -111,7 +111,7 @@ public class Grid {
 
     private boolean isPartofHorizontalSequenceOfAtLeastLength(int x, int y, int length)
     {
-        int count = 0;
+        int count = 1;
         final int playerID = get(x, y);
         for (int delta = 1; delta < length; delta++)
         {
@@ -127,7 +127,7 @@ public class Grid {
     }
     private boolean isPartofVerticalSequenceOfAtLeastLength(int x, int y, int length)
     {
-        int count = 0;
+        int count = 1;
         final int playerID = get(x, y);
         for (int delta = 1; delta < length; delta++)
         {
@@ -143,7 +143,7 @@ public class Grid {
     }
     private boolean isPartofDownLeftDiagonalSequenceOfAtLeastLength(int x, int y, int length)
     {
-        int count = 0;
+        int count = 1;
         final int playerID = get(x, y);
         for (int delta = 1; delta < length; delta++)
         {
@@ -159,7 +159,7 @@ public class Grid {
     }
     private boolean isPartofUpRightDiagonalSequenceOfAtLeastLength(int x, int y, int length)
     {
-        int count = 0;
+        int count = 1;
         final int playerID = get(x, y);
         for (int delta = 1; delta < length; delta++)
         {
@@ -172,5 +172,43 @@ public class Grid {
             else break;
         }
         return count >= length;
+    }
+
+    public static interface Listener
+    {
+        public void piecePlaced(PiecePlacedEvent e);
+    }
+    public static class PiecePlacedEvent
+    {
+        protected final int x, y, playerID;
+        protected final Object source;
+
+        public PiecePlacedEvent(int playerID, int x, int y, Object source) {
+            this.x = x;
+            this.y = y;
+            this.playerID = playerID;
+            this.source = source;
+        }
+
+        public Object getSource() {
+            return source;
+        }
+
+        /*public PiecePlacedEvent() {
+            throw new UnsupportedOperationException("Not yet implemented");
+        }*/
+
+        public int getPlayerID() {
+            return playerID;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
     }
 }
