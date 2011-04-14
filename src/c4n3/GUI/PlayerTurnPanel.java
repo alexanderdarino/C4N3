@@ -14,6 +14,7 @@ package c4n3.GUI;
 /**
  *
  * @author Alexander Darino
+ * @author Pierre LaBorde
  */
 public class PlayerTurnPanel extends javax.swing.JPanel {
 

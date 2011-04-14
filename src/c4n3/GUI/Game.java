@@ -15,22 +15,36 @@ import c4n3.Grid.PiecePlacedEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+import java.util.Random;
 
 /**
  *
  * @author Alexander Darino
+ * @author Pierre LaBorde
  */
 public class Game extends javax.swing.JFrame{
 
+    private Color p1Color = Color.BLACK , p2Color = Color.BLACK;
+    private Engine engine;
     /** Creates new form Game */
     public Game() {
         
         initComponents();
-        Engine engine = new Engine();
-        gameGrid.setGrid(engine.getGrid());
+       /* java.awt.Frame[] frames = java.awt.Frame.getFrames();
+        for (int i = 0; i < frames.length; i++)
+        {
+            frames[i].setResizable(false);
+            frames[i].setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+        }*/
+        engine = new Engine();
+
+        gameGrid.setEnabled(false);
         gameGrid.setListener(engine);
-
-
+        
+//        player1GoesFirstButton.setEnabled(false);
+//        player2GoesFirstButton.setEnabled(false);
+//        greenColorButton.setEnabled(false);
+//        redColorButton.setEnabled(false);
 
     }
 
@@ -60,6 +74,12 @@ public class Game extends javax.swing.JFrame{
         gameGrid = new c4n3.GUI.Grid();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Connect 4 Not 3");
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
@@ -69,6 +89,7 @@ public class Game extends javax.swing.JFrame{
         playerColorPanel.add(playerColorLabel);
 
         playerColorButtonGroup.add(greenColorButton);
+        greenColorButton.setSelected(true);
         greenColorButton.setText("Green");
         greenColorButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -79,6 +100,11 @@ public class Game extends javax.swing.JFrame{
 
         playerColorButtonGroup.add(redColorButton);
         redColorButton.setText("Red");
+        redColorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                redColorButtonActionPerformed(evt);
+            }
+        });
         playerColorPanel.add(redColorButton);
 
         newGamePanel.add(playerColorPanel);
@@ -87,16 +113,32 @@ public class Game extends javax.swing.JFrame{
         playerOrderPanel.add(playerOrderLabel);
 
         playerOrderButtonGroup.add(player1GoesFirstButton);
+        player1GoesFirstButton.setSelected(true);
         player1GoesFirstButton.setText("Player 1");
+        player1GoesFirstButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                player1GoesFirstButtonActionPerformed(evt);
+            }
+        });
         playerOrderPanel.add(player1GoesFirstButton);
 
         playerOrderButtonGroup.add(player2GoesFirstButton);
         player2GoesFirstButton.setText("Player 2");
+        player2GoesFirstButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                player2GoesFirstButtonActionPerformed(evt);
+            }
+        });
         playerOrderPanel.add(player2GoesFirstButton);
 
         newGamePanel.add(playerOrderPanel);
 
         startGameButton.setText("Start Game");
+        startGameButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startGameButtonActionPerformed(evt);
+            }
+        });
         newGamePanel.add(startGameButton);
 
         jPanel1.add(newGamePanel);
@@ -109,8 +151,64 @@ public class Game extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void greenColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greenColorButtonActionPerformed
-        // TODO add your handling code here:
+        gameGrid.setPlayer1Color(Color.GREEN);
+        gameGrid.setPlayer2Color(Color.RED);
     }//GEN-LAST:event_greenColorButtonActionPerformed
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        
+    }//GEN-LAST:event_formMousePressed
+
+    private void redColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redColorButtonActionPerformed
+        gameGrid.setPlayer1Color(Color.RED);
+        gameGrid.setPlayer2Color(Color.GREEN);
+    }//GEN-LAST:event_redColorButtonActionPerformed
+
+    private void player1GoesFirstButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_player1GoesFirstButtonActionPerformed
+        gameGrid.setPlayerTurn(1);
+        
+    }//GEN-LAST:event_player1GoesFirstButtonActionPerformed
+
+    private void player2GoesFirstButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_player2GoesFirstButtonActionPerformed
+        gameGrid.setPlayerTurn(2);
+    }//GEN-LAST:event_player2GoesFirstButtonActionPerformed
+
+    private void startGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startGameButtonActionPerformed
+      
+            
+        int n = JOptionPane.showConfirmDialog(null, "Start New Game?",
+    "C4N3 Restart", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (n == 0)
+        {
+
+            engine.newGrid();
+            player1GoesFirstButton.setEnabled(false);
+            player2GoesFirstButton.setEnabled(false);
+            greenColorButton.setEnabled(false);
+            redColorButton.setEnabled(false);
+            if (greenColorButton.isSelected())
+            {
+                p1Color = Color.GREEN;
+                p2Color = Color.RED;
+            }
+            else
+            {
+                p1Color = Color.RED;
+                p2Color = Color.GREEN;
+            }
+            gameGrid.setPlayer1Color(p1Color);
+            gameGrid.setPlayer2Color(p2Color);
+            gameGrid.setPlayerTurn(player1GoesFirstButton.isSelected() ? 1 : 2);
+            if (!player1GoesFirstButton.isSelected()) engine.getComputerMove((int)(10 * Math.random()), (int)(10 * Math.random()));
+            gameGrid.setEnabled(true);
+            //gameGrid.setGrid(new c4n3.Grid());
+            //TODO: make sure this actually creates a new grid, do i need a new engine?
+        }
+        else
+        {
+        }
+
+    }//GEN-LAST:event_startGameButtonActionPerformed
 
     /**
     * @param args the command line arguments
@@ -146,34 +244,88 @@ public class Game extends javax.swing.JFrame{
 
     public class Engine implements c4n3.Grid.Listener
     {
-        c4n3.Grid grid = new c4n3.Grid();
+
+        public Engine()
+        {
+            newGrid();
+        }
+        
+        c4n3.Grid grid = null;
+
         public void piecePlaced(PiecePlacedEvent e) {
+                playerTurnPanel.updateTurn(e.getPlayerID(), Character.toString((char)(e.getY() + 'A')) + Integer.toString(e.getX()+1));
                if (grid.isPartOfSequenceOfAtLeastLength(e.getX(), e.getY(), 3))
                {
                     if (grid.isPartOfSequenceOfAtLeastLength(e.getX(), e.getY(), 4))
                     {
-                        gameGrid.setGrid(null);
-                        JOptionPane.showMessageDialog(null, e.getPlayerID() + " has won!");
+                        JOptionPane.showMessageDialog(null,"Player " + e.getPlayerID() + " has won! " + "Player " + (1+e.getPlayerID()%2) + " has lost.");
                     }
                     else
                     {
-                        gameGrid.setGrid(null);
-                        JOptionPane.showMessageDialog(null, e.getPlayerID() + " has lost. " + (1+e.getPlayerID()%2) + " has won!");
+                        JOptionPane.showMessageDialog(null,"Player " + e.getPlayerID() + " has lost. " + "Player " +(1+e.getPlayerID()%2) + " has won!");
                     }
+                        gameGrid.setEnabled(false);
+                        player1GoesFirstButton.setEnabled(true);
+                        player2GoesFirstButton.setEnabled(true);
+                        greenColorButton.setEnabled(true);
+                        redColorButton.setEnabled(true);
                }
                else
                {
-                   playerTurnPanel.updateTurn(e.getPlayerID(), Character.toString((char)(e.getY() + 'A')) + Integer.toString(e.getX()+1));
-                   gameGrid.setPlayerTurn(1+e.getPlayerID()%2);
+                   
+                   int playerTurn = 1+e.getPlayerID()%2;
+
+                   gameGrid.setPlayerTurn(playerTurn);
+                   if (playerTurn == 2)
+                   {
+                       getComputerMove(e.getX(), e.getY());
+                       //gameGrid.setPlayerTurn(1);
+                   }
+
                    gameGrid.setEnabled(true);
                }
-
-
         }
+
+        public void newGrid()
+        {
+            grid = new c4n3.Grid();
+            gameGrid.setGrid(grid);
+        }
+
+        //TODO: call this from somewhere and/or move this somewhere
+        public void getComputerMove(int userMoveX, int userMoveY)
+        {
+              //grid.isPartOfSequenceOfAtLeastLength(WIDTH, WIDTH, WIDTH);
+            //c4n3.Grid.PiecePlacedEvent();
+            int computerMoveX = -1, computerMoveY = -1;
+            Random rand = new Random();
+            int min = -3, max = 3;
+            int computerOffsetX = rand.nextInt(max - min + 1) + min;
+            int computerOffsetY = rand.nextInt(max - min + 1) + min;
+
+            while (!grid.isEmpty(userMoveX + computerOffsetX, userMoveY + computerOffsetY) || !grid.isWithinBounds(computerMoveX, computerMoveY))
+            {
+                computerOffsetX = rand.nextInt(max - min + 1) + min;
+                computerOffsetY = rand.nextInt(max - min + 1) + min;
+                computerMoveX = userMoveX + computerOffsetX;
+                computerMoveY = userMoveY + computerOffsetY;
+            }
+            // now that we have a valid location to place the computer's piece
+                //TODO: return these values or store them somewhere accessible
+
+            gameGrid.place(computerMoveX, computerMoveY);
+          }
 
         c4n3.Grid getGrid() {
             return grid;
         }
+
+        //c4n3.Grid resetGrid()
+       // {
+            //c4n3.Grid grid2 = new c4n3.Grid();
+            //return grid2;
+         //   return new c4n3.Grid();
+       // }
 
     }
 

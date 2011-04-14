@@ -5,6 +5,7 @@ package c4n3;
  * Allows player pieces to be placed and retrieved from the game board.
  * Can be queried to test if a piece is part of a sequence of a given length.
  * @author Alexander Darino
+ * @author Pierre LaBorde
  */
 public class Grid {
 
@@ -104,7 +105,7 @@ public class Grid {
         return cell[x][y] == 0;
     }
 
-    protected boolean isWithinBounds(int x, int y)
+    public boolean isWithinBounds(int x, int y)
     {
         return x >= 0 && x < WIDTH && y >=0 && y < HEIGHT;
     }

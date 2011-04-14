@@ -36,23 +36,43 @@ public class Grid extends JPanel implements c4n3.Grid.Listener
         
     }
 
+    public void place(int x, int y)
+    {
+        piecePlaced(piece[x][y]);
+    }
+
     public void setGrid(c4n3.Grid grid)
     {
-        this.grid = grid;
-        piece = new Piece[grid.getWidth()][grid.getHeight()];
-
-        for (int x = 0; x < grid.getWidth(); x++)
+        if (this.grid != null)
         {
-            for (int y = 0; y < grid.getHeight(); y++)
+            for (int x = 0; x < c4n3.Grid.getWidth(); x++)
+            {
+                for (int y = 0; y < c4n3.Grid.getHeight(); y++)
+                {
+                    this.remove(piece[x][y]);
+                }
+            }
+            //this.repaint();
+            //setVisible(false);
+            //setVisible(true);
+            this.getParent().repaint();
+        }
+        this.grid = grid;
+        piece = new Piece[c4n3.Grid.getWidth()][c4n3.Grid.getHeight()];
+
+        for (int x = 0; x < c4n3.Grid.getWidth(); x++)
+        {
+            for (int y = 0; y < c4n3.Grid.getHeight(); y++)
             {
                 piece[x][y] = new Piece(this);
                 buttonToCoordinate.put(piece[x][y], new Integer[] {x, y});
                 piece[x][y].addMouseListener(piece[x][y]);
                 this.add(piece[x][y]);
-                piece[x][y].setVisible(true);
+                piece[x][y].setVisible(true);   
             }
         }
     }
+    
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -72,13 +92,21 @@ public class Grid extends JPanel implements c4n3.Grid.Listener
         setEnabled(false);
         int x = buttonToCoordinate.get(piece)[0];
         int y = buttonToCoordinate.get(piece)[1];
-        if (set(x, y, piecePlayerID)) listener.piecePlaced(new PiecePlacedEvent(piecePlayerID, x, y, this));
-        else setEnabled(true);
+        if (set(x, y, piecePlayerID))
+        {
+            listener.piecePlaced(new PiecePlacedEvent(piecePlayerID, x, y, this));
+            
+        }
+        else
+        {
+            setEnabled(true);
+        }
     }
 
     @Override
     protected void paintComponent(Graphics g)
     {
+        
         for (int x = 0; x < c4n3.Grid.getHeight(); x++)
         {
             g.drawString(Integer.toString(x+1), (x+1) * getWidth()/(c4n3.Grid.getWidth()+2), g.getFontMetrics().getHeight());
